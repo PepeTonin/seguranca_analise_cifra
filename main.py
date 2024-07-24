@@ -3,7 +3,34 @@ import numpy as np
 import matplotlib.pyplot as plt
 import seaborn as sns
 
-data = {
+
+def is_all_lists_in_dict_same_length(data):
+    result = True
+    key_length = len(data["key"])
+    plain_text_length = len(data["plain_text"])
+    enc_text_length = len(data["enc_text"])
+    if (
+        (key_length != plain_text_length)
+        or (key_length != enc_text_length)
+        or (plain_text_length != enc_text_length)
+    ):
+        result = False
+    return result
+
+
+def verify_all_data(data_list):
+    for data in data_list:
+        if not (is_all_lists_in_dict_same_length(data)):
+            return False
+    return True
+
+
+def letter_percentage(text):
+    counts = pd.Series(list(text)).value_counts(normalize=True) * 100
+    return counts.reindex(sorted(counts.index), fill_value=0)
+
+
+results_test_1 = {
     "key": [
         "a",
         "a",
@@ -66,7 +93,7 @@ data = {
     ],
 }
 
-data_to_concat_1 = {
+results_test_2 = {
     "key": ["aa", "aa", "aa", "aa", "aa", "aa", "aa", "aa", "aa", "aa", "aa"],
     "plain_text": [
         "a",
@@ -96,7 +123,7 @@ data_to_concat_1 = {
     ],
 }
 
-data_to_concat_2 = {
+results_test_3 = {
     "key": ["a", "a", "a", "a", "a", "a", "a", "a", "a", "a"],
     "plain_text": [
         "b",
@@ -124,38 +151,36 @@ data_to_concat_2 = {
     ],
 }
 
+results_test_4 = {
+    "key": ["a", "aa", "a", "aa", "a", "aa"],
+    "plain_text": [
+        "texto grande para fazer analise bem grande mesmo",
+        "texto grande para fazer analise bem grande mesmo",
+        "texto um pouco menor agora teste",
+        "texto um pouco menor agora teste",
+        "mais um teste para finalizar",
+        "mais um teste para finalizar",
+    ],
+    "enc_text": [
+        "QLMSMKKJPKPMKJMQLLKMKJKQLLJMKLLQLKKMKJKQLNMMKJSPLKSLSQPLLMLMLQLMMMKJKPKNMKKKPLMRLSQPLKPLSQQLLQMKJRPLMKLMLQLMNMKJSQLKRMKJLQLNNMKJKPLKLLMLPLMLLSRQLLLMKKNQLNKMKJKPKLMKLJPKJMKKPQLLRMKJOPLKQLMLOKRLSQQLNOMKKOQLLSMKKOQLLOMKKJPKMMKKPOKOLMLPLLPLSQQLKOMKKNQLNPMKJSPLLNLSQQLKMMKKLQLMJMKJKPLMOLMLPKKMKJKPKSMKKJQLNJMKJJQLKJMKJJQLMQMKKNQLNQMKKKPKQMKKNPLKNLSQPLNLLMLQLMPMKJMJ",
+        "QMMQMTRPLSMTRQMLRMNMRMLNNLLMRMOQNLKTRMMRNLKSQMMNMNMRMMSNLKPQMLTMTRQMLMMNMRMOONLKLRMORNLLLRMMKNLMMQLLNLKLRMNQNLKNPLPMNMRMMMNLLOQLRNLLOQLMNLMKQLNNLLQQMMOMTRQMNLMNMRMOKNLKKQLKNLLQQLQNLKNQMLQMTRRMOPNLLPQMNPMNMRMNNNLKLRMNRNLLOQLTNLLKRMNTNLLKRMONNLKTQMNMMTSRMMPNLLKRMOLNLKLRMLKNLKKRMNKNLKLQMLOMTRRMNONLKTRMMLNLKLQMNSMTRRMLPNLLORMMTNLLPRMLSNLKMQLONLLLQMOMMNMRMLLNLKLK",
+        "QMQNONSNNTOMLMRMLOMMRRMUOMMNRNNLNONSNMUOMMPSNMLOMMMRNNQNUSSNMROMLMRMNOMNLRMROMMSSNNPOMMPSNOMOMLMRMOOMMRSNNSOMMRRNMPNONSNMQOMLURMMOMLMSNNNOMLOSNMTOMMMQMTNONRNNRNONRMPOMMMSNNUOMMQSNOLOMMRSNMOOMMMSNNOOMMMRNNMNUSSNMSOMMLRMSOMLURNMNNUUSNMMOMMSL",
+        "GBAZCAAAFBBFBCBFAFCAAGGBAFCAZAFBBZBCBGBBCCAAAGBACCAAAGBAACAAGFBABBIIGBBICAAEFACCAAFEAHBCBFAGCAZIFAACAZAFBADBCBGBBDCAADFBBABIGGBBGCAAFFBBEBIGGBAICAADFADCAAAGBBBCAZCFAICAABEAEBCBGBAHCAAAGBCZCAAFGBAECAZIGBBHCAZAGBAGCAAZFAZCAAFFABCABZGBCACAZAZ",
+        "VQQTRPQQVQQRRPOWUPURPOXTPPQXVVQPORPPTUQPVQXVTPVQRQUPTRPPVUPRRPPTUQQQQXVVQPXRPOQVQPPRPPUUQPTQXVVQPSRPPQUPQRPOTVQPURPPSUQPRQRQUPWRPPUVQQVRPPSVQQSRPOTVQQORPOTUPORPOXVQPQRPOPUPXRPOPTPSQRQUQPWQRQUQQUQXVVQQPRPPOO",
+        "YUTXUBZYTAVTTYZUTBVTSUYTSVTSBZUTSVTTXZUUSVTSXYTUVTSXZUTUVTSTZUTYVTTWZUTWVTTUYUTVUVUZUUVVTSAXTTUBZYTXVTTZYUUYUBZYUTZUBZZUUTVTTSZUTTVTTYYTVVTTXYUTAUVUXTZUVUZUUXVTUUYUUUUBZZUUWVTSXXTWUVUYTYVTSBYTBVTSTZUUZVTTWS",
+    ],
+}
 
-def is_all_arrays_same_length(data):
-    result = True
-    key_length = len(data["key"])
-    plain_text_length = len(data["plain_text"])
-    enc_text_length = len(data["enc_text"])
-    if (
-        (key_length != plain_text_length)
-        or (key_length != enc_text_length)
-        or (plain_text_length != enc_text_length)
-    ):
-        result = False
-    return result
+list_all_results = [results_test_1, results_test_2, results_test_3, results_test_4]
+is_all_results_approved = verify_all_data(list_all_results)
 
-
-def verify_all_data(array_data):
-    for data in array_data:
-        if not (is_all_arrays_same_length(data)):
-            return False
-    return True
-
-
-is_all_data_approved = verify_all_data([data, data_to_concat_1, data_to_concat_2])
-
-if not is_all_data_approved:
+if not is_all_results_approved:
     print("Erro na análise dos dados")
 else:
-    df = pd.DataFrame(data)
-    df_to_concat_1 = pd.DataFrame(data_to_concat_1)
-    df_to_concat_2 = pd.DataFrame(data_to_concat_2)
-    df = pd.concat([df, df_to_concat_1, df_to_concat_2])
-
+    df = pd.DataFrame()
+    for result in list_all_results:
+        df_to_concat = pd.DataFrame(result)
+        df = pd.concat([df, df_to_concat], ignore_index=True)
     print(df)
 
     df["unique_chars"] = df["enc_text"].apply(lambda x: len(set(x)))
@@ -168,9 +193,7 @@ else:
 
     plt.subplot(1, 2, 1)
     plot1 = sns.barplot(data=df_key1, x="plain_text_length", y="unique_chars")
-    plot1.set_xticks(
-        range(df["plain_text_length"].min(), df["plain_text_length"].max() + 1)
-    )
+    plot1.set_xticks(range(df["plain_text_length"].min(), len(df_key1) - 9))
     plot1.set_yticks(range(df["unique_chars"].min(), df["unique_chars"].max() + 1))
     plt.title("Chave de 1 caractere")
     plt.xlabel("Tamanho do texto de entrada")
@@ -178,9 +201,7 @@ else:
 
     plt.subplot(1, 2, 2)
     plot2 = sns.barplot(data=df_key2, x="plain_text_length", y="unique_chars")
-    plot2.set_xticks(
-        range(df["plain_text_length"].min(), df["plain_text_length"].max() + 1)
-    )
+    plot2.set_xticks(range(df["plain_text_length"].min(), len(df_key2) + 1))
     plot2.set_yticks(range(df["unique_chars"].min(), df["unique_chars"].max() + 1))
     plt.title("Chave de 2 caracteres")
     plt.xlabel("Tamanho do texto de entrada")
@@ -188,15 +209,9 @@ else:
 
     plt.show()
 
-    def letter_percentage(text):
-        total_chars = len(text)
-        counts = pd.Series(list(text)).value_counts(normalize=True) * 100
-        return counts.reindex(sorted(counts.index), fill_value=0)
-
     df_percentages_list = [letter_percentage(enc_text) for enc_text in df["enc_text"]]
 
     n = len(df_percentages_list)
-
     rows = int(np.ceil(n / 3))
     cols = 3
 
@@ -205,8 +220,13 @@ else:
     for i, percentages in enumerate(df_percentages_list):
         plt.subplot(rows, cols, i + 1)
         sns.barplot(x=percentages.index, y=percentages.values)
+        plain_text_to_print = ""
+        if len(df["plain_text"].iloc[i]) > 8:
+            plain_text_to_print = df["plain_text"].iloc[i][:15] + "..."
+        else:
+            plain_text_to_print = df["plain_text"].iloc[i]
         plt.title(
-            f'Distribuição de letras no texto encriptados para:\nTexto de entrada: {df["plain_text"].iloc[i]} e Chave: {df["key"].iloc[i]}'
+            f'Distribuição de letras no texto encriptados para:\nPlain text: {plain_text_to_print} - {len(df["plain_text"].iloc[i])} caracteres\nChave: {df["key"].iloc[i]}'
         )
         plt.xlabel("Letra")
         plt.ylabel("Porcentagem (%)")
